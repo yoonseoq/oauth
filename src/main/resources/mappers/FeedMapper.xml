@@ -12,7 +12,7 @@
     <select id="selFeedList">
         SELECT A.feed_id AS feedId, A.contents, A.location
              , A.created_at AS createdAt
-             , B.user_id AS writerId
+             , B.user_id AS writerUserId
              , IF(B.nick_name IS NULL, B.uid, B.nick_name) AS writerNm
              , B.pic AS writerPic
              , IF(C.feed_id IS NULL, 0, 1) AS isLike
