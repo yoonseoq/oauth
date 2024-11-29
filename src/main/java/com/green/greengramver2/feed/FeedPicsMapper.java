@@ -6,4 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface FeedPicsMapper {
     int insFeedPics(FeedPicDto p);
+    int insFeedPics2(FeedPicDto p);
 }
