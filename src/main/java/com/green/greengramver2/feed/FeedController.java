@@ -37,11 +37,10 @@ public class FeedController {
     }
 
     @GetMapping
-    @Operation(summary = "Feed 리스트", description = "loginUserId는 로그인한 사용자의 pk")
+    @Operation(summary = "Feed 리스트", description = "signed_user_id는 로그인한 사용자의 pk")
     public ResultResponse<List<FeedGetRes>> getFeedList(@ParameterObject @ModelAttribute FeedGetReq p) {
         log.info("FeedController > getFeedList > p: {}", p);
-        //List<FeedGetRes> list = service.getFeedList(p);
-        List<FeedGetRes> list = new ArrayList<>();
+        List<FeedGetRes> list = service.getFeedList(p);
         return ResultResponse.<List<FeedGetRes>>builder()
                 .resultMessage(String.format("%d rows", list.size()))
                 .resultData(list)

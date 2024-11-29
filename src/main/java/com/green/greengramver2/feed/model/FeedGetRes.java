@@ -16,6 +16,7 @@ public class FeedGetRes {
     private long writerId;
     private String writerNm;
     private String writerPic;
+    private int isLike;
 
     private List<String> pics = new ArrayList<>();
 }

@@ -19,4 +19,10 @@
             ( #{feedId}, #{pic} )
         </foreach>
     </insert>
+
+    <select id="selFeedPics">
+        SELECT pic
+          FROM feed_pics
+         WHERE feed_id = #{feedId}
+    </select>
 </mapper>
