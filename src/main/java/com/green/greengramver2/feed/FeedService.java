@@ -73,7 +73,7 @@ public class FeedService {
 
             FeedCommentGetRes commentGetRes = new FeedCommentGetRes();
             commentGetRes.setCommentList(commentList);
-            commentGetRes.setMoreComment( commentList.size() == p.getSize() ); //4개면 true, 4개 아니면 false
+            commentGetRes.setMoreComment( commentList.size() == commentGetReq.getSize() ); //4개면 true, 4개 아니면 false
 
             if(commentGetRes.isMoreComment()) {
                 commentList.remove(commentList.size() - 1);

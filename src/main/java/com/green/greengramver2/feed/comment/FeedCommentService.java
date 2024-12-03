@@ -32,7 +32,7 @@ public class FeedCommentService {
         }
         List<FeedCommentDto> commentList = mapper.selFeedCommentList(p);
         res.setCommentList(commentList);
-        res.setMoreComment(commentList.size() == p.getSize());
+        res.setMoreComment( commentList.size() == p.getSize() );
         if(res.isMoreComment()) {
             commentList.remove(commentList.size() - 1);
         }
