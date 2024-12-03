@@ -1,10 +1,7 @@
 package com.green.greengramver2.feed.comment;
 
 import com.green.greengramver2.feed.FeedService;
-import com.green.greengramver2.feed.comment.model.FeedCommentDto;
-import com.green.greengramver2.feed.comment.model.FeedCommentGetReq;
-import com.green.greengramver2.feed.comment.model.FeedCommentGetRes;
-import com.green.greengramver2.feed.comment.model.FeedCommentPostReq;
+import com.green.greengramver2.feed.comment.model.*;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +23,7 @@ public class FeedCommentService {
 
     public FeedCommentGetRes getFeedComment(FeedCommentGetReq p) {
         FeedCommentGetRes res = new FeedCommentGetRes();
-        if(p.getPage() < 2) {
+        if(p.getStartIdx() < 0) {
             res.setCommentList(new ArrayList<>());
             return res;
         }
@@ -37,5 +34,9 @@ public class FeedCommentService {
             commentList.remove(commentList.size() - 1);
         }
         return res;
+    }
+
+    public int delFeedComment(FeedCommentDelReq p) {
+        return mapper.delFeedComment(p);
     }
 }
