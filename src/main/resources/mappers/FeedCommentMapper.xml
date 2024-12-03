@@ -24,4 +24,5 @@
          ORDER BY A.feed_comment_id DESC
          LIMIT #{startIdx}, #{size}
     </select>
+
 </mapper>
