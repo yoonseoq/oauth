@@ -30,7 +30,7 @@ public class FeedCommentService {
             res.setCommentList(new ArrayList<>());
             return res;
         }
-        List<FeedCommentDto> commentList = mapper.selFeedCommentList(p);
+        List<FeedCommentDto> commentList = mapper.selFeedCommentList(p); //1~21사이
         res.setCommentList(commentList);
         res.setMoreComment( commentList.size() == p.getSize() );
         if(res.isMoreComment()) {
