@@ -6,8 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
-public interface FeedPicsMapper {
-    int insFeedPics(FeedPicDto p);
-    int insFeedPics2(FeedPicDto p);
-    List<String> selFeedPics(long feedId);
+public interface FeedPicMapper {
+    int insFeedPic(FeedPicDto p);
+    int insFeedPic2(FeedPicDto p);
+    List<String> selFeedPicList(long feedId);
 }

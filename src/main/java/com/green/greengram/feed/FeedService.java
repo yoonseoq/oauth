@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FeedService {
     private final FeedMapper feedMapper;
-    private final FeedPicsMapper feedPicsMapper;
+    private final FeedPicMapper feedPicMapper;
     private final FeedCommentMapper feedCommentMapper;
     private final MyFileUtils myFileUtils;
 
@@ -52,7 +52,7 @@ public class FeedService {
         FeedPicDto feedPicDto = new FeedPicDto();
         feedPicDto.setFeedId(feedId);
         feedPicDto.setPics(picNameList);
-        int resultPics = feedPicsMapper.insFeedPics(feedPicDto);
+        int resultPics = feedPicMapper.insFeedPic(feedPicDto);
 
         return FeedPostRes.builder()
                           .feedId(feedId)
@@ -66,7 +66,7 @@ public class FeedService {
         for(int i=0; i<list.size(); i++) {
             FeedGetRes item = list.get(i);
             //피드 당 사진 리스트
-            item.setPics(feedPicsMapper.selFeedPics(item.getFeedId()));
+            item.setPics(feedPicMapper.selFeedPicList(item.getFeedId()));
 
             //피드 당 댓글 4개
             FeedCommentGetReq commentGetReq = new FeedCommentGetReq(item.getFeedId(), 0, 3);

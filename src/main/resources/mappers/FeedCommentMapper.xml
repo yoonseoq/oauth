@@ -5,7 +5,7 @@
 
     <!-- PK값 리턴 -->
     <insert id="insFeedComment" useGeneratedKeys="true" keyProperty="feedCommentId">
-        INSERT INTO feed_comments
+        INSERT INTO feed_comment
            SET `feed_id` = #{feedId}
              , `user_id` = #{userId}
              , `comment` = #{comment}
@@ -17,7 +17,7 @@
              , B.user_id AS writerUserId
              , IF(B.nick_name IS NULL, B.uid, B.nick_name) AS writerNm
              , B.pic AS writerPic
-          FROM feed_comments A
+          FROM feed_comment A
          INNER JOIN user B
             ON A.user_id = B.user_id
          WHERE A.feed_id = #{feedId}
@@ -26,7 +26,7 @@
     </select>
 
     <delete id="delFeedComment">
-        DELETE FROM feed_comments
+        DELETE FROM feed_comment
          WHERE feed_comment_id = #{feedCommentId}
            AND user_id = #{userId}
     </delete>

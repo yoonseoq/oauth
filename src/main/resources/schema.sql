@@ -23,8 +23,8 @@ ALTER TABLE feed ADD CONSTRAINT FK_FEED_writer_user_id
     FOREIGN KEY(writer_user_id) REFERENCES user(user_id);
 -- feed_pics는 feed에 종속되어 있다. (종속관계- 부모/자식)
 -- 자식 테이블의 pk는 부모테이블의 pk를 참조한다. (복합키가 된다.)
-DROP TABLE feed_pics;
-CREATE TABLE feed_pics(
+DROP TABLE feed_pic;
+CREATE TABLE feed_pic(
       FOREIGN KEY (feed_id) REFERENCES feed(feed_id)
     , feed_id BIGINT
     , pic VARCHAR(50)
@@ -47,7 +47,7 @@ CREATE table feed_like (
 -- 댓글 테이블
 -- feed_id, user_id, 내용, created_at, updated_at
 -- 대리키(인조 식별자)
-CREATE TABLE feed_comments(
+CREATE TABLE feed_comment(
       feed_comment_id BIGINT AUTO_INCREMENT PRIMARY KEY
     , feed_id BIGINT NOT NULL
     , user_id BIGINT NOT NULL
