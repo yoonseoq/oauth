@@ -73,4 +73,5 @@
            SET pic = #{picName}
          WHERE user_id = #{signedUserId}
     </update>
+
 </mapper>

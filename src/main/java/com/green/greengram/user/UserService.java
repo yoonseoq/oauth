@@ -70,7 +70,7 @@ public class UserService {
         return mapper.selUserInfo2(p);
     }
 
-    @Transactional
+
     public String patchUserPic(UserPicPatchReq p) {
         //저장할 파일명(랜덤한 파일명) 생성한다. 이때, 확장자는 오리지날 파일명과 일치하게 한다.
         String savedPicName = (p.getPic() != null ? myFileUtils.makeRandomFileName(p.getPic()) : null);
