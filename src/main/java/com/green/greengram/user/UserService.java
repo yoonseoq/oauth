@@ -1,9 +1,7 @@
 package com.green.greengram.user;
 
 import com.green.greengram.common.MyFileUtils;
-import com.green.greengram.user.model.UserSignInReq;
-import com.green.greengram.user.model.UserSignInRes;
-import com.green.greengram.user.model.UserSignUpReq;
+import com.green.greengram.user.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
@@ -11,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -63,5 +62,9 @@ public class UserService {
         }
         res.setMessage("로그인 성공");
         return res;
+    }
+
+    public UserInfoGetRes getUserInfo(UserInfoGetReq p) {
+        return mapper.selUserInfo2(p);
     }
 }
