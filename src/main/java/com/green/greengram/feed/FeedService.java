@@ -125,23 +125,6 @@ public class FeedService {
             pics.add(item.getPic());
         }
 
-
-
-//        int lastIndex = 0;
-//        for(FeedGetRes res : list) {
-//            List<String> pics = new ArrayList<>(2);
-//            for(int i=lastIndex; i<feedPicList.size(); i++) {
-//                FeedPicSel feedPicSel = feedPicList.get(i);
-//                if(res.getFeedId() == feedPicSel.getFeedId()) {
-//                    pics.add(feedPicSel.getPic());
-//                } else {
-//                    res.setPics(pics);
-//                    lastIndex = i;
-//                    break;
-//                }
-//            }
-//        }
-
         //피드와 관련된 댓글 리스트
         List<FeedCommentDto> feedCommentList = feedCommentMapper.selFeedCommentListByFeedIdsLimit4(feedIds);
         Map<Long, FeedCommentGetRes> commentHashMap = new HashMap<>();
@@ -163,7 +146,6 @@ public class FeedService {
             if(feedCommentGetRes == null) {
                 feedCommentGetRes = new FeedCommentGetRes();
                 feedCommentGetRes.setCommentList(new ArrayList<>());
-                res.setComment(feedCommentGetRes);
             } else if (feedCommentGetRes.getCommentList().size() == 4) {
                 feedCommentGetRes.setMoreComment(true);
                 feedCommentGetRes.getCommentList().remove(feedCommentGetRes.getCommentList().size() - 1);
