@@ -119,20 +119,20 @@ public class FeedService {
         for(FeedPicSel item : feedPicList) {
             long feedId = item.getFeedId();
             if(!picHashMap.containsKey(feedId)) {
-                picHashMap.put(feedId, new ArrayList<String>(2));
+                picHashMap.put(feedId, new ArrayList<>(3));
             }
             List<String> pics = picHashMap.get(feedId);
             pics.add(item.getPic());
         }
 
         //피드와 관련된 댓글 리스트
-        List<FeedCommentDto> feedCommentList = feedCommentMapper.selFeedCommentListByFeedIdsLimit4(feedIds);
+        List<FeedCommentDto> feedCommentList = feedCommentMapper.selFeedCommentListByFeedIdsLimit4Ver2(feedIds);
         Map<Long, FeedCommentGetRes> commentHashMap = new HashMap<>();
         for(FeedCommentDto item : feedCommentList) {
             long feedId = item.getFeedId();
             if(!commentHashMap.containsKey(feedId)) {
                 FeedCommentGetRes feedCommentGetRes = new FeedCommentGetRes();
-                feedCommentGetRes.setCommentList(new ArrayList<>());
+                feedCommentGetRes.setCommentList(new ArrayList<>(4));
                 commentHashMap.put(feedId, feedCommentGetRes);
             }
             FeedCommentGetRes feedCommentGetRes = commentHashMap.get(feedId);
@@ -155,7 +155,6 @@ public class FeedService {
         log.info("list: {}", list);
         return list;
     }
-
 
     @Transactional
     public int deleteFeed(FeedDeleteReq p) {

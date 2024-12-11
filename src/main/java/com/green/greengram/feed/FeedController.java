@@ -32,8 +32,19 @@ public class FeedController {
     }
 
     @GetMapping
-    @Operation(summary = "Feed 리스트", description = "signed_user_id는 로그인한 사용자의 pk")
+    @Operation(summary = "Feed 리스트 - N+1", description = "signed_user_id는 로그인한 사용자의 pk")
     public ResultResponse<List<FeedGetRes>> getFeedList(@ParameterObject @ModelAttribute FeedGetReq p) {
+        log.info("FeedController > getFeedList > p: {}", p);
+        List<FeedGetRes> list = service.getFeedList(p);
+        return ResultResponse.<List<FeedGetRes>>builder()
+                .resultMessage(String.format("%d rows", list.size()))
+                .resultData(list)
+                .build();
+    }
+
+    @GetMapping("ver3")
+    @Operation(summary = "Feed 리스트 - No N+1", description = "signed_user_id는 로그인한 사용자의 pk")
+    public ResultResponse<List<FeedGetRes>> getFeedListVer3(@ParameterObject @ModelAttribute FeedGetReq p) {
         log.info("FeedController > getFeedList > p: {}", p);
         List<FeedGetRes> list = service.getFeedList3(p);
         return ResultResponse.<List<FeedGetRes>>builder()
