@@ -47,4 +47,6 @@
          WHERE feed_id = #{feedId}
            AND writer_user_id = #{signedUserId}
     </delete>
+
+
 </mapper>

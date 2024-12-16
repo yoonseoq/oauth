@@ -101,7 +101,10 @@ public class FeedService {
         List<FeedGetRes> list = feedMapper.selFeedList(p);
 
         //feed_id를 골라내야 한다.
+
+        list.stream().mapToLong(FeedGetRes::getFeedId).sum();
         List<Long> feedIds4 = list.stream().map(FeedGetRes::getFeedId).collect(Collectors.toList());
+
         List<Long> feedIds5 = list.stream().map(item -> ((FeedGetRes)item).getFeedId()).toList();
         List<Long> feedIds6 = list.stream().map(item -> { return ((FeedGetRes)item).getFeedId();}).toList();
 
@@ -126,6 +129,8 @@ public class FeedService {
         }
 
         //피드와 관련된 댓글 리스트
+
+        //댓글이 있는 경우만 정리
         List<FeedCommentDto> feedCommentList = feedCommentMapper.selFeedCommentListByFeedIdsLimit4Ver2(feedIds);
         Map<Long, FeedCommentGetRes> commentHashMap = new HashMap<>();
         for(FeedCommentDto item : feedCommentList) {
@@ -143,7 +148,7 @@ public class FeedService {
             res.setPics(picHashMap.get(res.getFeedId()));
             FeedCommentGetRes feedCommentGetRes = commentHashMap.get(res.getFeedId());
 
-            if(feedCommentGetRes == null) {
+            if(feedCommentGetRes == null) { //댓글이 하나도 없었던 피드인 경우
                 feedCommentGetRes = new FeedCommentGetRes();
                 feedCommentGetRes.setCommentList(new ArrayList<>());
             } else if (feedCommentGetRes.getCommentList().size() == 4) {
@@ -155,6 +160,8 @@ public class FeedService {
         log.info("list: {}", list);
         return list;
     }
+
+
 
     @Transactional
     public int deleteFeed(FeedDeleteReq p) {
