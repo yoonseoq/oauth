@@ -2,16 +2,22 @@ package com.green.greengram.config.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.green.greengram.config.security.MyUserDetails;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Set;
 
 @Service
 public class TokenProvider {
@@ -58,13 +64,31 @@ public class TokenProvider {
     public boolean validToken(String token) {
         try {
             //JWT 복호화
-            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+            getClaims(token);
             return true;
         } catch (Exception e) {
             return false;
         }
     }
 
+    public Authentication getAuthentication(String token) {
+        UserDetails userDetails = getUserDetailsFromToken(token);
+        return userDetails == null
+                ? null
+                : new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
 
+    public UserDetails getUserDetailsFromToken(String token) {
+        Claims claims = getClaims(token);
+        String json = (String)claims.get("signedUser");
+        JwtUser jwtUser = objectMapper.convertValue(json, JwtUser.class);
+        MyUserDetails userDetails = new MyUserDetails();
+        userDetails.setJwtUser(jwtUser);
+        return userDetails;
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+    }
 
 }
