@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.green.greengram.config.security.MyUserDetails;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -28,7 +29,7 @@ public class TokenProvider {
     public TokenProvider(ObjectMapper objectMapper, JwtProperties jwtProperties) {
         this.objectMapper = objectMapper;
         this.jwtProperties = jwtProperties;
-        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecretKey()));
+        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecretKey())); //43자 이상
     }
 
     // JWT 생성
@@ -38,10 +39,17 @@ public class TokenProvider {
     }
 
     private String makeToken(JwtUser jwtUser, Date expiry) {
+
+        JwtBuilder builder = Jwts.builder();
+        JwtBuilder.BuilderHeader header = builder.header();
+        header.type("JWT");
+
+        builder.issuer(jwtProperties.getIssuer());
+
+
         // JWT 암호화
         return Jwts.builder()
-                .header().add("typ", "JWT")
-                         .add("alg", "HS256")
+                .header().type("JWT")
                 .and()
                 .issuer(jwtProperties.getIssuer())
                 .issuedAt(new Date())
