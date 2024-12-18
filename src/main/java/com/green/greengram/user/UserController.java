@@ -4,6 +4,7 @@ import com.green.greengram.common.model.ResultResponse;
 import com.green.greengram.user.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +52,16 @@ public class UserController {
         return ResultResponse.<UserInfoGetRes>builder()
                 .resultMessage("유저 프로필 정보")
                 .resultData(res)
+                .build();
+    }
+
+    @GetMapping("access-token")
+    @Operation(summary = "Access Token 재발행")
+    public ResultResponse<String> getAccessToken(HttpServletRequest req) {
+        String accessToken = service.getAccessToken(req);
+        return ResultResponse.<String>builder()
+                .resultMessage("Access Token 재발행")
+                .resultData(accessToken)
                 .build();
     }
 

@@ -5,6 +5,8 @@ import com.green.greengram.common.MyFileUtils;
 import com.green.greengram.config.jwt.JwtUser;
 import com.green.greengram.config.jwt.TokenProvider;
 import com.green.greengram.user.model.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -97,6 +99,12 @@ public class UserService {
         return mapper.selUserInfo2(p);
     }
 
+    public String getAccessToken(HttpServletRequest req) {
+        Cookie cookie = cookieUtils.getCookie(req, "refreshToken");
+        String refreshToken = cookie.getValue();
+        log.info("refreshToken: {}", refreshToken);
+        return refreshToken;
+    }
 
     public String patchUserPic(UserPicPatchReq p) {
         //저장할 파일명(랜덤한 파일명) 생성한다. 이때, 확장자는 오리지날 파일명과 일치하게 한다.
