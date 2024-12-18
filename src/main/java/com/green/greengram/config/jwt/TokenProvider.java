@@ -10,15 +10,12 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Set;
 
 @Service
 public class TokenProvider {
@@ -46,7 +43,6 @@ public class TokenProvider {
 
         builder.issuer(jwtProperties.getIssuer());
 
-
         // JWT 암호화
         return Jwts.builder()
                 .header().type("JWT")
@@ -73,12 +69,13 @@ public class TokenProvider {
         try {
             //JWT 복호화
             getClaims(token);
-            return true;
         } catch (Exception e) {
             return false;
         }
+        return true;
     }
 
+    //Spring Security에서 인증 처리를 해주어야 한다. 그때 Authentication 객체가 필요.
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = getUserDetailsFromToken(token);
         return userDetails == null
@@ -89,7 +86,12 @@ public class TokenProvider {
     public UserDetails getUserDetailsFromToken(String token) {
         Claims claims = getClaims(token);
         String json = (String)claims.get("signedUser");
-        JwtUser jwtUser = objectMapper.convertValue(json, JwtUser.class);
+        JwtUser jwtUser = null;
+        try {
+            jwtUser = objectMapper.readValue(json, JwtUser.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         MyUserDetails userDetails = new MyUserDetails();
         userDetails.setJwtUser(jwtUser);
         return userDetails;

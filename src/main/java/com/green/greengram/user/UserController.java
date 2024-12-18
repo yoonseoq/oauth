@@ -4,6 +4,7 @@ import com.green.greengram.common.model.ResultResponse;
 import com.green.greengram.user.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -34,8 +35,8 @@ public class UserController {
 
     @PostMapping("sign-in")
     @Operation(summary = "로그인")
-    public ResultResponse<UserSignInRes> signIn(@RequestBody UserSignInReq p) {
-        UserSignInRes res = service.postSignIn(p);
+    public ResultResponse<UserSignInRes> signIn(@RequestBody UserSignInReq p, HttpServletResponse response) {
+        UserSignInRes res = service.postSignIn(p, response);
         return ResultResponse.<UserSignInRes>builder()
                 .resultMessage("로그인 성공!")
                 .resultData(res)
