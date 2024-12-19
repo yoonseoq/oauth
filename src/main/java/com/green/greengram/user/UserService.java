@@ -4,6 +4,7 @@ import com.green.greengram.common.CookieUtils;
 import com.green.greengram.common.MyFileUtils;
 import com.green.greengram.config.jwt.JwtUser;
 import com.green.greengram.config.jwt.TokenProvider;
+import com.green.greengram.config.security.AuthenticationFacade;
 import com.green.greengram.user.model.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final CookieUtils cookieUtils;
+    private final AuthenticationFacade authenticationFacade;
 
     public int postSignUp(MultipartFile pic, UserSignUpReq p) {
         //프로필 이미지 파일 처리
@@ -96,6 +98,7 @@ public class UserService {
     }
 
     public UserInfoGetRes getUserInfo(UserInfoGetReq p) {
+        p.setSignedUserId(authenticationFacade.getSignedUserId());
         return mapper.selUserInfo2(p);
     }
 
@@ -107,6 +110,7 @@ public class UserService {
     }
 
     public String patchUserPic(UserPicPatchReq p) {
+        p.setSignedUserId(authenticationFacade.getSignedUserId());
         //저장할 파일명(랜덤한 파일명) 생성한다. 이때, 확장자는 오리지날 파일명과 일치하게 한다.
         String savedPicName = (p.getPic() != null ? myFileUtils.makeRandomFileName(p.getPic()) : null);
 
