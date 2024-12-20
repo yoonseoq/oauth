@@ -24,7 +24,7 @@ public class FeedController {
     @PostMapping
     @Operation(summary = "피드 등록", description = "필수: 사진리스트 || 옵션: 위치, 내용")
     public ResultResponse<FeedPostRes> postFeed(@RequestPart List<MultipartFile> pics
-                                              , @RequestPart FeedPostReq p) {
+                                              , @Valid @RequestPart FeedPostReq p) {
         FeedPostRes res = service.postFeed(pics, p);
         return ResultResponse.<FeedPostRes>builder()
                 .resultMessage("피드 등록 완료")

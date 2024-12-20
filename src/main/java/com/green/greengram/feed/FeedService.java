@@ -7,10 +7,12 @@ import com.green.greengram.feed.comment.model.FeedCommentDto;
 import com.green.greengram.feed.comment.model.FeedCommentGetReq;
 import com.green.greengram.feed.comment.model.FeedCommentGetRes;
 import com.green.greengram.feed.model.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Validated
 public class FeedService {
     private final FeedMapper feedMapper;
     private final FeedPicMapper feedPicMapper;
@@ -31,6 +34,7 @@ public class FeedService {
     private final AuthenticationFacade authenticationFacade;
 
     @Transactional
+    //자동 커밋 종료
     public FeedPostRes postFeed(List<MultipartFile> pics, FeedPostReq p) {
         p.setWriterUserId(authenticationFacade.getSignedUserId());
         int result = feedMapper.insFeed(p);
@@ -65,6 +69,9 @@ public class FeedService {
                           .pics(picNameList)
                           .build();
     }
+
+    //에러가 터졌다 rollback
+    //에러가 안 터졌다 commit;
 
     public List<FeedGetRes> getFeedList(FeedGetReq p) {
         p.setSignedUserId(authenticationFacade.getSignedUserId());
