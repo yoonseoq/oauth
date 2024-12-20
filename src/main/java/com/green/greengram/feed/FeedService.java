@@ -91,6 +91,8 @@ public class FeedService {
         return list;
     }
 
+
+
     //select 2번
     public List<FeedGetRes> getFeedList2(FeedGetReq p) {
         return null;
