@@ -1,8 +1,9 @@
 package com.green.greengram.common.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -14,6 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 
+import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     //(추가메소드) 우리가 커스텀한 예외가 발생되었을 경우 캐치
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<Object> handleException(CustomException e) {
+        log.error("CustomException - handlerException: {}", e);
         return handleExceptionInternal(e.getErrorCode());
     }
 
@@ -36,6 +39,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(CommonErrorCode.INVALID_PARAMETER, ex);
     }
 
+    @ExceptionHandler(SignatureException.class) //토큰이 오염 되었을 때
+    public ResponseEntity<Object> handleSignatureException() {
+        return handleExceptionInternal(UserErrorCode.UNAUTHENTICATED);
+    }
+
+    @ExceptionHandler(MalformedJwtException.class) //토큰 값이 유효하지 않을 때
+    public ResponseEntity<Object> handleMalformedJwtException() {
+        return handleExceptionInternal(UserErrorCode.INVALID_TOKEN);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class) //토큰이 만료가 되었을 때
+    public ResponseEntity<Object> handleExpiredJwtException() {
+        return handleExceptionInternal(UserErrorCode.EXPIRED_TOKEN);
+    }
 
 
     private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode) {
