@@ -67,16 +67,6 @@ public class TokenProvider {
         }
     }
 
-    public boolean validToken(String token) {
-        try {
-            //JWT 복호화
-            getClaims(token);
-        } catch (Exception e) {
-            throw new CustomException(UserErrorCode.EXPIRED_TOKEN);
-        }
-        return true;
-    }
-
     //Spring Security에서 인증 처리를 해주어야 한다. 그때 Authentication 객체가 필요.
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = getUserDetailsFromToken(token);
