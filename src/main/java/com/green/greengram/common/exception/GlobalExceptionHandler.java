@@ -54,7 +54,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(UserErrorCode.EXPIRED_TOKEN);
     }
 
-
     private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode) {
         return handleExceptionInternal(errorCode, null);
     }
