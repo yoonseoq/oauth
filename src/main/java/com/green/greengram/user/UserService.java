@@ -102,7 +102,7 @@ public class UserService {
         log.info("refreshToken: {}", refreshToken);
 
         JwtUser jwtUser = tokenProvider.getJwtUserFromToken(refreshToken);
-        return tokenProvider.generateToken(jwtUser, Duration.ofMinutes(100));
+        return tokenProvider.generateToken(jwtUser, Duration.ofSeconds(30));
     }
 
     public String patchUserPic(UserPicPatchReq p) {
