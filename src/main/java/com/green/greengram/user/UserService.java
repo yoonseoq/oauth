@@ -68,7 +68,6 @@ public class UserService {
         if( res == null || !passwordEncoder.matches(p.getUpw(), res.getUpw())) {
             throw new CustomException(UserErrorCode.INCORRECT_ID_PW);
         }
-
         /*
         JWT 토큰 생성 2개? AccessToken(20분), RefreshToken(15일)
          */
