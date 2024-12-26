@@ -12,7 +12,7 @@ import java.util.List;
 public interface FeedMapper {
     int insFeed(FeedPostReq p);
     List<FeedGetRes> selFeedList(FeedGetReq p);
-
+    List<FeedAndPicDto> selFeedWithPicList(FeedGetReq p);
 
     int delFeedLikeAndFeedCommentAndFeedPic(FeedDeleteReq p);
     int delFeed(@Valid FeedDeleteReq p);

@@ -78,7 +78,7 @@ public class UserService {
         jwtUser.getRoles().add("ROLE_USER");
         jwtUser.getRoles().add("ROLE_ADMIN");
 
-        String accessToken = tokenProvider.generateToken(jwtUser, Duration.ofSeconds(30));
+        String accessToken = tokenProvider.generateToken(jwtUser, Duration.ofHours(8));
         String refreshToken = tokenProvider.generateToken(jwtUser, Duration.ofDays(15));
 
         //refreshToken은 쿠키에 담는다.
@@ -101,7 +101,7 @@ public class UserService {
         log.info("refreshToken: {}", refreshToken);
 
         JwtUser jwtUser = tokenProvider.getJwtUserFromToken(refreshToken);
-        return tokenProvider.generateToken(jwtUser, Duration.ofSeconds(30));
+        return tokenProvider.generateToken(jwtUser, Duration.ofHours(8));
     }
 
     public String patchUserPic(UserPicPatchReq p) {

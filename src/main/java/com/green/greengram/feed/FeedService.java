@@ -105,11 +105,38 @@ public class FeedService {
         return list;
     }
 
-
-
     //select 2번
     public List<FeedGetRes> getFeedList2(FeedGetReq p) {
-        return null;
+        List<FeedGetRes> list = new ArrayList<>(p.getSize());
+
+        //SELECT (1): feed + feed_pic
+        List<FeedAndPicDto> feedAndPicDtoList = feedMapper.selFeedWithPicList(p);
+
+        FeedGetRes beforeFeedGetRes = new FeedGetRes();
+        for(FeedAndPicDto feedAndPicDto : feedAndPicDtoList) {
+            if(beforeFeedGetRes.getFeedId() != feedAndPicDto.getFeedId()) {
+                beforeFeedGetRes = new FeedGetRes();
+                beforeFeedGetRes.setPics(new ArrayList<>(3));
+                list.add(beforeFeedGetRes);
+                beforeFeedGetRes.setFeedId(feedAndPicDto.getFeedId());
+                beforeFeedGetRes.setContents(feedAndPicDto.getContents());
+                beforeFeedGetRes.setLocation(feedAndPicDto.getLocation());
+                beforeFeedGetRes.setCreatedAt(feedAndPicDto.getCreatedAt());
+                beforeFeedGetRes.setWriterUserId(feedAndPicDto.getWriterUserId());
+                beforeFeedGetRes.setWriterNm(feedAndPicDto.getWriterNm());
+                beforeFeedGetRes.setWriterPic(feedAndPicDto.getWriterPic());
+                beforeFeedGetRes.setIsLike(feedAndPicDto.getIsLike());
+            }
+            beforeFeedGetRes.getPics().add(feedAndPicDto.getPic());
+        }
+
+
+
+
+
+        //SELECT (2): feed_comment
+
+        return list;
     }
 
 
@@ -123,7 +150,7 @@ public class FeedService {
         }
 
         //feed_id를 골라내야 한다.
-        list.stream().mapToLong(FeedGetRes::getFeedId).sum();
+        //list.stream().mapToLong(FeedGetRes::getFeedId).sum();
         List<Long> feedIds4 = list.stream().map(FeedGetRes::getFeedId).collect(Collectors.toList());
 
         List<Long> feedIds5 = list.stream().map(item -> ((FeedGetRes)item).getFeedId()).toList();

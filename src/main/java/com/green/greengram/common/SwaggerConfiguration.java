@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
     info = @Info(
           title = "GreenGram"
         , description = "그린그램 SNS"
-        , version = "v2"
+        , version = "v3.1"
     )
     , security = @SecurityRequirement(name = "Authorization")
 )
