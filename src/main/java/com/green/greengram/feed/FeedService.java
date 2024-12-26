@@ -111,10 +111,13 @@ public class FeedService {
 
         //SELECT (1): feed + feed_pic
         List<FeedAndPicDto> feedAndPicDtoList = feedMapper.selFeedWithPicList(p);
+        List<Long> feedIds = new ArrayList<>(list.size());
 
         FeedGetRes beforeFeedGetRes = new FeedGetRes();
         for(FeedAndPicDto feedAndPicDto : feedAndPicDtoList) {
             if(beforeFeedGetRes.getFeedId() != feedAndPicDto.getFeedId()) {
+                feedIds.add(feedAndPicDto.getFeedId());
+
                 beforeFeedGetRes = new FeedGetRes();
                 beforeFeedGetRes.setPics(new ArrayList<>(3));
                 list.add(beforeFeedGetRes);
@@ -130,11 +133,31 @@ public class FeedService {
             beforeFeedGetRes.getPics().add(feedAndPicDto.getPic());
         }
 
-
-
-
-
         //SELECT (2): feed_comment
+        List<FeedCommentDto> feedCommentList = feedCommentMapper.selFeedCommentListByFeedIdsLimit4Ver2(feedIds);
+        Map<Long, FeedCommentGetRes> commentHashMap = new HashMap<>();
+        for(FeedCommentDto item : feedCommentList) {
+            long feedId = item.getFeedId();
+            if(!commentHashMap.containsKey(feedId)) {
+                FeedCommentGetRes feedCommentGetRes = new FeedCommentGetRes();
+                feedCommentGetRes.setCommentList(new ArrayList<>(4));
+                commentHashMap.put(feedId, feedCommentGetRes);
+            }
+            FeedCommentGetRes feedCommentGetRes = commentHashMap.get(feedId);
+            feedCommentGetRes.getCommentList().add(item);
+        }
+        for(FeedGetRes res : list) {
+            FeedCommentGetRes feedCommentGetRes = commentHashMap.get(res.getFeedId());
+
+            if(feedCommentGetRes == null) { //댓글이 하나도 없었던 피드인 경우
+                feedCommentGetRes = new FeedCommentGetRes();
+                feedCommentGetRes.setCommentList(new ArrayList<>());
+            } else if (feedCommentGetRes.getCommentList().size() == 4) {
+                feedCommentGetRes.setMoreComment(true);
+                feedCommentGetRes.getCommentList().remove(feedCommentGetRes.getCommentList().size() - 1);
+            }
+            res.setComment(feedCommentGetRes);
+        }
 
         return list;
     }
