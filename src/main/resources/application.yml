@@ -8,6 +8,8 @@ jwt:
   issuer: green@green.kr
   secret-key: DaeguGreenArtAcademyClass502RoomForJavaSpringBootFightingD23sdfsdf23FDSADFSDFDass502RoomForJavaSprinass502RoomForJavaSprin
 
+
+
 mybatis:
   mapper-locations: mappers/**/*.xml
 

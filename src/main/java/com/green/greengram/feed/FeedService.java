@@ -234,8 +234,11 @@ public class FeedService {
 
     public List<FeedGetRes> getFeedList4(FeedGetReq p) {
         List<FeedWithPicCommentDto> dtoList = feedMapper.selFeedWithPicAndCommentLimit4List(p);
-
-        return null;
+        List<FeedGetRes> list = new ArrayList<>(dtoList.size());
+        for(FeedWithPicCommentDto item : dtoList) {
+            list.add(new FeedGetRes(item));
+        }
+        return list;
     }
 
 
