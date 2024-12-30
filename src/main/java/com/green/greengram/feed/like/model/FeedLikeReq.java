@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @Schema(title = "피드 좋아요 Toggle")
