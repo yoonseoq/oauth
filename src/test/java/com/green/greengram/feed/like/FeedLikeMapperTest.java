@@ -98,7 +98,15 @@ class FeedLikeMapperTest {
 
     @Test
     void delFeedLike() {
+        FeedLikeVo actualFeedLikeVoBefore = feedLikeTestMapper.selFeedLikeByFeedIdAndUserId(existedData);
         int actualAffectedRows = feedLikeMapper.delFeedLike(existedData);
-        assertEquals(1, actualAffectedRows);
+        FeedLikeVo actualFeedLikeVoAfter = feedLikeTestMapper.selFeedLikeByFeedIdAndUserId(existedData);
+
+        assertAll(
+              () -> assertEquals(1, actualAffectedRows)
+            , () -> assertNotNull(actualFeedLikeVoBefore)
+            , () -> assertNull(actualFeedLikeVoAfter)
+        );
+
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Mapper
 public interface FeedLikeTestMapper {
-    @Select("SELECT * FROM feed_like WHERE feed_id = #{feedId} AND user_id = #{userId}")
+    @Select("SELECT created_at, user_id, feed_id FROM feed_like WHERE feed_id = #{feedId} AND user_id = #{userId}")
     FeedLikeVo selFeedLikeByFeedIdAndUserId(FeedLikeReq p);
 
     @Select("SELECT * FROM feed_like")

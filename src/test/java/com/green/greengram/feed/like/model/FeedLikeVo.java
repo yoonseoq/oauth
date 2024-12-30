@@ -1,8 +1,6 @@
 package com.green.greengram.feed.like.model;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 /*
     immutable(불변성)하게 객체를 만들고 싶다. 그러면 setter를 빼야함.
     private한 멤버필드에 값 넣는 방법 2가지 (생성자, setter)
@@ -20,7 +18,6 @@ import lombok.Getter;
 */
 
 @Getter
-@Builder
 @EqualsAndHashCode
 public class FeedLikeVo {
     private long feedId;
