@@ -83,11 +83,10 @@ class FeedServiceTest {
             throw new IOException();
         }).when(myFileUtils).transferTo(mpf1, givenFilePath1);
 
-        List<MultipartFile> pics = new ArrayList<>(1);
-        pics.add(mpf1);
-
         assertAll(
             () -> {
+                List<MultipartFile> pics = new ArrayList<>(1);
+                pics.add(mpf1);
                 FeedPostReq actualParam = new FeedPostReq();
                 actualParam.setLocation(LOCATION);
                 assertThrows(CustomException.class, () -> feedService.postFeed(pics, actualParam));
