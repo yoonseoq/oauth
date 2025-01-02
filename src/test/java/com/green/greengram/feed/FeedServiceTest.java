@@ -158,39 +158,38 @@ class FeedServiceTest {
             invocationParam.setFeedId(FEED_ID);
             return 1;
         });
-        final String SAVED_PIC_NAME_1 = "abc.jpg";
-        final String SAVED_PIC_NAME_2 = "def.jpg";
-        MultipartFile mpf1 = new MockMultipartFile("pics", "test1.txt", "text/plain", "This is test1 file".getBytes());
-        MultipartFile mpf2 = new MockMultipartFile("pics", "test2.txt", "text/plain", "This is test2 file".getBytes());
-        given(myFileUtils.makeRandomFileName(mpf1)).willReturn(SAVED_PIC_NAME_1);
-        given(myFileUtils.makeRandomFileName(mpf2)).willReturn(SAVED_PIC_NAME_2);
-
-
-        List<String> savedFileNames = Arrays.asList(SAVED_PIC_NAME_1, SAVED_PIC_NAME_2);
+        final List<String> SAVED_FILE_NAMES = Arrays.asList("abc.jpg", "def.jpg");
+        final List<MultipartFile> PICS = Arrays.asList(
+                  new MockMultipartFile("pics", "test1.txt", "text/plain", "This is test1 file".getBytes())
+                , new MockMultipartFile("pics", "test2.txt", "text/plain", "This is test2 file".getBytes())
+        );
+        for(int i=0; i<SAVED_FILE_NAMES.size(); i++) {
+            String picName = SAVED_FILE_NAMES.get(i);
+            MultipartFile mpf = PICS.get(i);
+            given(myFileUtils.makeRandomFileName(mpf)).willReturn(picName);
+        }
 
         FeedPicDto expectedFeedPicDto = new FeedPicDto();
         expectedFeedPicDto.setFeedId(FEED_ID);
-        expectedFeedPicDto.setPics(savedFileNames);
+        expectedFeedPicDto.setPics(SAVED_FILE_NAMES);
 
-        List<MultipartFile> pics = new ArrayList<>(1);
-        pics.add(mpf1);
-        pics.add(mpf2);
-        FeedPostRes expectedResult = FeedPostRes.builder().feedId(FEED_ID).pics(savedFileNames).build();
+        FeedPostRes expectedResult = FeedPostRes.builder().feedId(FEED_ID).pics(SAVED_FILE_NAMES).build();
+
         FeedPostReq actualParam = new FeedPostReq();
         actualParam.setLocation(LOCATION);
-        FeedPostRes actualResult = feedService.postFeed(pics, actualParam);
+        FeedPostRes actualResult = feedService.postFeed(PICS, actualParam);
 
         String expectedMiddlePath = String.format("feed/%d", FEED_ID_10);
         assertAll(
                   () -> assertEquals(expectedResult, actualResult)
                 , () -> verify(feedPicMapper).insFeedPic(expectedFeedPicDto)
                 , () -> {
-                      String filePath = String.format("%s/%s", expectedMiddlePath, SAVED_PIC_NAME_1);
-                      verify(myFileUtils).transferTo(mpf1, filePath);
-                }
-                , () -> {
-                    String filePath = String.format("%s/%s", expectedMiddlePath, SAVED_PIC_NAME_2);
-                    verify(myFileUtils).transferTo(mpf2, filePath);
+                      for(int i=0; i<SAVED_FILE_NAMES.size(); i++) {
+                          String picName = SAVED_FILE_NAMES.get(i);
+                          MultipartFile mf = PICS.get(i);
+                          String filePath = String.format("%s/%s", expectedMiddlePath, picName);
+                          verify(myFileUtils).transferTo(mf, filePath);
+                      }
                 }
         );
     }
