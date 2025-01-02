@@ -4,6 +4,7 @@ import com.green.greengram.common.MyFileUtils;
 import com.green.greengram.common.exception.CustomException;
 import com.green.greengram.config.security.AuthenticationFacade;
 import com.green.greengram.feed.comment.FeedCommentMapper;
+import com.green.greengram.feed.model.FeedPicDto;
 import com.green.greengram.feed.model.FeedPostReq;
 import com.green.greengram.feed.model.FeedPostRes;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -99,8 +101,8 @@ class FeedServiceTest {
         );
     }
 
-
     @Test
+    @DisplayName("test2과 같은 맥락. 파일을 2개로 테스트 함.")
     void test2_1() throws Exception {
         given(authenticationFacade.getSignedUserId()).willReturn(SIGNED_USER_ID);
 
@@ -123,9 +125,6 @@ class FeedServiceTest {
         String givenFilePath1 = String.format("%s/%s", expectedMiddlePath, SAVED_PIC_NAME_1);
         String givenFilePath2 = String.format("%s/%s", expectedMiddlePath, SAVED_PIC_NAME_2);
 
-        given(myFileUtils.makeRandomFileName(mpf1)).willReturn(SAVED_PIC_NAME_1);
-        given(myFileUtils.makeRandomFileName(mpf2)).willReturn(SAVED_PIC_NAME_2);
-
         doAnswer(invoctaion -> {
             return null;
         }).when(myFileUtils).transferTo(mpf1, givenFilePath1);
@@ -145,29 +144,54 @@ class FeedServiceTest {
     }
 
 
-
-
-
-
-
-
-
-
-
-
     @Test
-    void test3() {
+    @DisplayName("정상 처리")
+    void test3() throws Exception {
+        final long FEED_ID = FEED_ID_10;
         given(authenticationFacade.getSignedUserId()).willReturn(SIGNED_USER_ID);
 
         FeedPostReq givenParam = new FeedPostReq();
         givenParam.setWriterUserId(SIGNED_USER_ID);
         givenParam.setLocation(LOCATION);
-        given(feedMapper.insFeed(givenParam)).willReturn(1);
+        given(feedMapper.insFeed(givenParam)).will(invocation -> {
+            FeedPostReq invocationParam = (FeedPostReq) invocation.getArgument(0);
+            invocationParam.setFeedId(FEED_ID);
+            return 1;
+        });
+        final String SAVED_PIC_NAME_1 = "abc.jpg";
+        final String SAVED_PIC_NAME_2 = "def.jpg";
+        MultipartFile mpf1 = new MockMultipartFile("pics", "test1.txt", "text/plain", "This is test1 file".getBytes());
+        MultipartFile mpf2 = new MockMultipartFile("pics", "test2.txt", "text/plain", "This is test2 file".getBytes());
+        given(myFileUtils.makeRandomFileName(mpf1)).willReturn(SAVED_PIC_NAME_1);
+        given(myFileUtils.makeRandomFileName(mpf2)).willReturn(SAVED_PIC_NAME_2);
 
+
+        List<String> savedFileNames = Arrays.asList(SAVED_PIC_NAME_1, SAVED_PIC_NAME_2);
+
+        FeedPicDto expectedFeedPicDto = new FeedPicDto();
+        expectedFeedPicDto.setFeedId(FEED_ID);
+        expectedFeedPicDto.setPics(savedFileNames);
+
+        List<MultipartFile> pics = new ArrayList<>(1);
+        pics.add(mpf1);
+        pics.add(mpf2);
+        FeedPostRes expectedResult = FeedPostRes.builder().feedId(FEED_ID).pics(savedFileNames).build();
         FeedPostReq actualParam = new FeedPostReq();
         actualParam.setLocation(LOCATION);
-        FeedPostRes actualResult = feedService.postFeed(null, actualParam);
+        FeedPostRes actualResult = feedService.postFeed(pics, actualParam);
 
-        verify(myFileUtils).makeFolders("feed/0");
+        String expectedMiddlePath = String.format("feed/%d", FEED_ID_10);
+        assertAll(
+                  () -> assertEquals(expectedResult, actualResult)
+                , () -> verify(feedPicMapper).insFeedPic(expectedFeedPicDto)
+                , () -> {
+                      String filePath = String.format("%s/%s", expectedMiddlePath, SAVED_PIC_NAME_1);
+                      verify(myFileUtils).transferTo(mpf1, filePath);
+                }
+                , () -> {
+                    String filePath = String.format("%s/%s", expectedMiddlePath, SAVED_PIC_NAME_2);
+                    verify(myFileUtils).transferTo(mpf2, filePath);
+                }
+        );
     }
 }
