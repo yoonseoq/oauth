@@ -1,13 +1,15 @@
 package com.green.greengram.feed.model;
 
 import com.green.greengram.feed.comment.model.FeedCommentDto;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
-@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 public class FeedWithPicCommentDto {
     private long feedId;
     private String contents;
