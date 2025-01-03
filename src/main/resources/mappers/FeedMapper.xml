@@ -66,6 +66,7 @@
         <result property="isLike" column="isLike" />
         <collection property="pics" resultMap="feedPicResultMap" />
         <collection property="commentList" resultMap="feedCommentResultMap" />
+
     </resultMap>
 
     <resultMap id="feedPicResultMap" type="String">

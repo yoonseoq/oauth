@@ -73,26 +73,48 @@ public class FeedServiceForGetFeedListTest extends FeedServiceParentTest {
 
         FeedGetRes actualResult = new FeedGetRes(expectedFeedCommentDto);
         assertAll(
-                  () -> assertEquals(expectedFeedCommentDto.getFeedId(), actualResult.getFeedId())
-                , () -> assertEquals(expectedFeedCommentDto.getContents(), actualResult.getContents())
-                , () -> assertEquals(expectedFeedCommentDto.getLocation(), actualResult.getLocation())
-                , () -> assertEquals(expectedFeedCommentDto.getCreatedAt(), actualResult.getCreatedAt())
-                , () -> assertEquals(expectedFeedCommentDto.getWriterUserId(), actualResult.getWriterUserId())
-                , () -> assertEquals(expectedFeedCommentDto.getWriterNm(), actualResult.getWriterNm())
-                , () -> assertEquals(expectedFeedCommentDto.getWriterPic(), actualResult.getWriterPic())
-                , () -> assertEquals(expectedFeedCommentDto.getIsLike(), actualResult.getIsLike())
-                , () -> assertEquals(expectedFeedCommentDto.getPics(), actualResult.getPics())
-                , () -> assertFalse(actualResult.getComment().isMoreComment())
-                , () -> assertEquals(expectedFeedCommentDto.getCommentList(), actualResult.getComment().getCommentList())
+              () -> assertEquals(expectedFeedCommentDto.getFeedId(), actualResult.getFeedId())
+            , () -> assertEquals(expectedFeedCommentDto.getContents(), actualResult.getContents())
+            , () -> assertEquals(expectedFeedCommentDto.getLocation(), actualResult.getLocation())
+            , () -> assertEquals(expectedFeedCommentDto.getCreatedAt(), actualResult.getCreatedAt())
+            , () -> assertEquals(expectedFeedCommentDto.getWriterUserId(), actualResult.getWriterUserId())
+            , () -> assertEquals(expectedFeedCommentDto.getWriterNm(), actualResult.getWriterNm())
+            , () -> assertEquals(expectedFeedCommentDto.getWriterPic(), actualResult.getWriterPic())
+            , () -> assertEquals(expectedFeedCommentDto.getIsLike(), actualResult.getIsLike())
+            , () -> assertEquals(expectedFeedCommentDto.getPics(), actualResult.getPics())
+            , () -> assertFalse(actualResult.getComment().isMoreComment())
+            , () -> assertEquals(expectedFeedCommentDto.getCommentList(), actualResult.getComment().getCommentList())
         );
-
     }
 
 
     @Test
-    @DisplayName("FeedGetRes commentList가 size 4였을 때 size 3으로 처리")
+    @DisplayName("FeedGetRes commentList가 size 4였을 때 size 3으 로처리")
     void objFeedGetRes_2() {
         List<FeedCommentDto> list = expectedFeedCommentDto.getCommentList();
         list.addAll(feedId4Comments);
+
+        FeedGetRes actualResult = new FeedGetRes(expectedFeedCommentDto);
+        assertAll(
+              () -> assertEquals(expectedFeedCommentDto.getFeedId(), actualResult.getFeedId())
+            , () -> assertEquals(expectedFeedCommentDto.getContents(), actualResult.getContents())
+            , () -> assertEquals(expectedFeedCommentDto.getLocation(), actualResult.getLocation())
+            , () -> assertEquals(expectedFeedCommentDto.getCreatedAt(), actualResult.getCreatedAt())
+            , () -> assertEquals(expectedFeedCommentDto.getWriterUserId(), actualResult.getWriterUserId())
+            , () -> assertEquals(expectedFeedCommentDto.getWriterNm(), actualResult.getWriterNm())
+            , () -> assertEquals(expectedFeedCommentDto.getWriterPic(), actualResult.getWriterPic())
+            , () -> assertEquals(expectedFeedCommentDto.getIsLike(), actualResult.getIsLike())
+            , () -> assertEquals(expectedFeedCommentDto.getPics(), actualResult.getPics())
+            , () -> assertTrue(actualResult.getComment().isMoreComment())
+            , () -> assertEquals(3, actualResult.getComment().getCommentList().size())
+            , () -> {
+                List<FeedCommentDto> commentList = actualResult.getComment().getCommentList();
+                for(int i=0; i<commentList.size(); i++) {
+                    assertEquals(feedId4Comments.get(i), commentList.get(i));
+                }
+            }
+        );
     }
+
+
 }
