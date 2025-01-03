@@ -1,18 +1,11 @@
 package com.green.greengram.feed;
 
-import com.green.greengram.common.MyFileUtils;
 import com.green.greengram.common.exception.CustomException;
-import com.green.greengram.config.security.AuthenticationFacade;
-import com.green.greengram.feed.comment.FeedCommentMapper;
 import com.green.greengram.feed.model.FeedPicDto;
 import com.green.greengram.feed.model.FeedPostReq;
 import com.green.greengram.feed.model.FeedPostRes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,18 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-class FeedServiceTest {
-    @Mock FeedMapper feedMapper;
-    @Mock FeedPicMapper feedPicMapper;
-    @Mock FeedCommentMapper feedCommentMapper;
-    @Mock MyFileUtils myFileUtils;
-    @Mock AuthenticationFacade authenticationFacade;
-    @InjectMocks FeedService feedService;
-
-    final long FEED_ID_10 = 10L;
-    final long SIGNED_USER_ID = 3L;
-    final String LOCATION = "테스트 위치";
+class FeedServiceForPostFeedTest extends FeedServiceParentTest {
 
     @Test
     @DisplayName("Insert시 영향받은 행이 0일 때, 예외 발생")
@@ -184,6 +166,7 @@ class FeedServiceTest {
 
         FeedPostReq actualParam = new FeedPostReq();
         actualParam.setLocation(LOCATION);
+
         FeedPostRes actualResult = feedService.postFeed(PICS, actualParam);
 
         String expectedMiddlePath = String.format("feed/%d", FEED_ID_10);
