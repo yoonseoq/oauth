@@ -23,8 +23,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FeedServiceTest {
@@ -67,20 +66,24 @@ class FeedServiceTest {
         givenParam.setWriterUserId(SIGNED_USER_ID);
         givenParam.setLocation(LOCATION);
         given(feedMapper.insFeed(givenParam)).will(invocation -> {
-            FeedPostReq invocationParam = (FeedPostReq) invocation.getArgument(0);
-            invocationParam.setFeedId(FEED_ID_10);
-            return 1;
+            FeedPostReq invocationParam = (FeedPostReq) invocation.getArgument(0); //아래에 actualParam 주소값이 넘어온다.
+            invocationParam.setFeedId(FEED_ID_10); //actualParam에 feedId = 10이 담기게 된다.
+            return 1; //insFeed메소드의 리턴값
         });
         final String SAVED_PIC_NAME_1 = "abc.jpg";
         MultipartFile mpf1 = new MockMultipartFile("pics", "test1.txt", "text/plain", "This is test1 file".getBytes());
         given(myFileUtils.makeRandomFileName(mpf1)).willReturn(SAVED_PIC_NAME_1);
+
         final String UPLOAD_PATH = "/home/download";
         given(myFileUtils.getUploadPath()).willReturn(UPLOAD_PATH);
 
         String expectedMiddlePath = String.format("feed/%d", FEED_ID_10);
         String givenFilePath1 = String.format("%s/%s", expectedMiddlePath, SAVED_PIC_NAME_1);
 
+        //return 메소드인 경우 given(임무부여) 방법
         given(myFileUtils.makeRandomFileName(mpf1)).willReturn(SAVED_PIC_NAME_1);
+
+        //void 메소드인 경우 given(임무부여) 방법, 주의사항: when()안에서 메소드 호출을 작성하면 안된다.
         doAnswer(invoctaion -> {
             throw new IOException();
         }).when(myFileUtils).transferTo(mpf1, givenFilePath1);
@@ -93,6 +96,7 @@ class FeedServiceTest {
                 actualParam.setLocation(LOCATION);
                 assertThrows(CustomException.class, () -> feedService.postFeed(pics, actualParam));
             }
+                //myFileUtils.makeFolders메소드가 호출이 되었고, 정확한 파라미터값("/feed/10")이 들어왔는지 단언
             , () -> verify(myFileUtils).makeFolders(expectedMiddlePath)
             , () -> {
                 String expectedDelFolderPath = String.format("%s/%s", UPLOAD_PATH, expectedMiddlePath);
@@ -102,7 +106,7 @@ class FeedServiceTest {
     }
 
     @Test
-    @DisplayName("test2과 같은 맥락. 파일을 2개로 테스트 함.")
+    @DisplayName("test2과 같은 맥락. 파일을 2개로 테스트 함. test2_1보다는 test2가 낫다.")
     void test2_1() throws Exception {
         given(authenticationFacade.getSignedUserId()).willReturn(SIGNED_USER_ID);
 
@@ -173,7 +177,10 @@ class FeedServiceTest {
         expectedFeedPicDto.setFeedId(FEED_ID);
         expectedFeedPicDto.setPics(SAVED_FILE_NAMES);
 
-        FeedPostRes expectedResult = FeedPostRes.builder().feedId(FEED_ID).pics(SAVED_FILE_NAMES).build();
+        FeedPostRes expectedResult = FeedPostRes.builder()
+                                                .feedId(FEED_ID)
+                                                .pics(SAVED_FILE_NAMES)
+                                                .build();
 
         FeedPostReq actualParam = new FeedPostReq();
         actualParam.setLocation(LOCATION);
