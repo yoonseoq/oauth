@@ -1,8 +1,10 @@
 package com.green.greengram.feed;
 
 import com.green.greengram.feed.comment.model.FeedCommentDto;
+import com.green.greengram.feed.model.FeedGetReq;
 import com.green.greengram.feed.model.FeedGetRes;
 import com.green.greengram.feed.model.FeedWithPicCommentDto;
+import org.apache.commons.lang3.ObjectUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 public class FeedServiceForGetFeedListTest extends FeedServiceParentTest {
     //feedId = 3, 댓글 3개
@@ -49,6 +54,7 @@ public class FeedServiceForGetFeedListTest extends FeedServiceParentTest {
     }
 
     FeedWithPicCommentDto expectedFeedCommentDto;
+    FeedWithPicCommentDto expectedFeedCommentDto2;
     @BeforeEach
     void setFeedWithPicCommentDto() {
         expectedFeedCommentDto = FeedWithPicCommentDto.builder()
@@ -63,6 +69,21 @@ public class FeedServiceForGetFeedListTest extends FeedServiceParentTest {
                 .pics(Arrays.asList("a.jpg", "b.jpg", "c.jpg"))
                 .commentList(new ArrayList<>(3))
                 .build();
+
+        expectedFeedCommentDto2 = FeedWithPicCommentDto.builder()
+                .feedId(4L)
+                .contents("컨텐츠4")
+                .location("위치4")
+                .createdAt("2025-01-03 11:03:04")
+                .writerUserId(14L)
+                .writerNm("홍길동4")
+                .writerPic("프로파일사진4.jpg")
+                .isLike(0)
+                .pics(Arrays.asList("a4.jpg", "b4.jpg", "c4.jpg"))
+                .commentList(new ArrayList<>(4))
+                .build();
+
+
     }
 
     @Test
@@ -116,5 +137,26 @@ public class FeedServiceForGetFeedListTest extends FeedServiceParentTest {
         );
     }
 
+    @Test
+    @DisplayName("getFeedList4 테스트 FeedWithPicCommentDto >> FeedGetRes")
+    void getFeedList4() throws Exception {
+        List<FeedCommentDto> givenCommentList1 = feedId3Comments.stream().toList();
+        List<FeedCommentDto> givenCommentList2 = feedId4Comments.stream().toList();
+
+        expectedFeedCommentDto.getCommentList().addAll(feedId3Comments.stream().toList());
+        expectedFeedCommentDto2.getCommentList().addAll(feedId4Comments.stream().toList());
+
+        List<FeedWithPicCommentDto> givenList = Arrays.asList(expectedFeedCommentDto, expectedFeedCommentDto2);
+
+        given(feedMapper.selFeedWithPicAndCommentLimit4List(any())).willReturn(givenList);
+
+        List<FeedGetRes> expectedList = Arrays.asList(
+                   
+        );
+
+        List<FeedGetRes> actualList = feedService.getFeedList4(new FeedGetReq(1, 2, null));
+
+        assertEquals(expectedList, actualList);
+    }
 
 }
