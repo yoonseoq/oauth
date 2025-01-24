@@ -10,7 +10,7 @@ import java.beans.ConstructorProperties;
 
 @Getter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode // 테스트에 임무부여할때 필요한놈
 public class FeedCommentDelReq {
     @Schema(name = "feed_comment_id")
     private long feedCommentId;
