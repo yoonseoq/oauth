@@ -7,6 +7,7 @@ import com.green.greengram.common.exception.UserErrorCode;
 import com.green.greengram.config.jwt.JwtUser;
 import com.green.greengram.config.jwt.TokenProvider;
 import com.green.greengram.config.security.AuthenticationFacade;
+import com.green.greengram.entity.User;
 import com.green.greengram.user.model.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,6 +31,7 @@ public class UserService {
     private final TokenProvider tokenProvider;
     private final CookieUtils cookieUtils;
     private final AuthenticationFacade authenticationFacade;
+    private final UserRepository userRepository;
 
     public int postSignUp(MultipartFile pic, UserSignUpReq p) {
         //프로필 이미지 파일 처리
@@ -38,19 +40,28 @@ public class UserService {
         //String hashedPassword = BCrypt.hashpw(p.getUpw(), BCrypt.gensalt());
         String hashedPassword = passwordEncoder.encode(p.getUpw());
         log.info("hashedPassword: {}", hashedPassword);
-        p.setUpw(hashedPassword);
-        p.setPic(savedPicName);
+//        p.setUpw(hashedPassword);
+//        p.setPic(savedPicName);
 
-        int result = mapper.insUser(p);
+
+        User user = new User();
+        user.setNickName(p.getNickName());
+        user.setUid(p.getUid());
+        user.setUpw(hashedPassword);
+        user.setPic(savedPicName);
+
+
+        //int result = mapper.insUser(p);
+        userRepository.save(user);
 
         if(pic == null) {
-            return result;
+            return 1;
         }
 
         // 저장 위치 만든다.
         // middlePath = user/${userId}
         // filePath = user/${userId}/${savedPicName}
-        long userId = p.getUserId(); //userId를 insert 후에 얻을 수 있다.
+        long userId = user.getUserId(); //userId를 insert 후에 얻을 수 있다.
         String middlePath = String.format("user/%d", userId);
         myFileUtils.makeFolders(middlePath);
         log.info("middlePath: {}", middlePath);
@@ -60,19 +71,20 @@ public class UserService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return result;
+        return 1;
     }
 
     public UserSignInRes postSignIn(UserSignInReq p, HttpServletResponse response) {
-        UserSignInRes res = mapper.selUserByUid(p.getUid());
-        if( res == null || !passwordEncoder.matches(p.getUpw(), res.getUpw())) {
+        User user = userRepository.findByUid(p.getUid());
+      //  UserSignInRes res = mapper.selUserByUid(p.getUid());
+        if( user == null || !passwordEncoder.matches(p.getUpw(), user.getUpw())) {
             throw new CustomException(UserErrorCode.INCORRECT_ID_PW);
         }
         /*
         JWT 토큰 생성 2개? AccessToken(20분), RefreshToken(15일)
          */
         JwtUser jwtUser = new JwtUser();
-        jwtUser.setSignedUserId(res.getUserId());
+        jwtUser.setSignedUserId(user.getUserId());
         jwtUser.setRoles(new ArrayList<>(2));
 
         jwtUser.getRoles().add("ROLE_USER");
@@ -85,9 +97,7 @@ public class UserService {
         int maxAge = 1_296_000; //15 * 24 * 60 * 60, 15일의 초(second)값
         cookieUtils.setCookie(response, "refreshToken", refreshToken, maxAge);
 
-        res.setMessage("로그인 성공");
-        res.setAccessToken(accessToken);
-        return res;
+        return new UserSignInRes(user.getUserId(),user.getNickName(),user.getPic(),accessToken);
     }
 
     public UserInfoGetRes getUserInfo(UserInfoGetReq p) {

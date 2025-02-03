@@ -2,18 +2,19 @@ package com.green.greengram.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
-@Setter
+@AllArgsConstructor
 @ToString
 public class UserSignUpReq {
-    @JsonIgnore
-    private long userId;
-    @JsonIgnore
-    private String pic;
+//    @JsonIgnore
+//    private long userId;
+//    @JsonIgnore
+//    private String pic; jpa 에서 얘네들 다 빼도됨
 
     @Schema(description = "유저 아이디", example = "mic", requiredMode = Schema.RequiredMode.REQUIRED)
     private String uid;
