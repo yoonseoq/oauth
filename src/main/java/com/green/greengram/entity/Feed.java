@@ -7,6 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+//@Table(name = "feed_table")//테이블명이 클래스명이 아닌 다른이름으로 만들고 싶다면
 public class Feed extends UpdatedAt{
     @Id // pk 라는 의미
     @GeneratedValue(strategy = GenerationType.IDENTITY)//자동증가
