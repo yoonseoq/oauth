@@ -13,13 +13,11 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class FeedCommentPostReq {
-    @JsonIgnore
-    private long feedCommentId;
+    //@JsonIgnore    private long feedCommentId; 필요가없음 서비스에서 따로 만들어줌
 
     @Schema(title = "피드 PK", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private long feedId;
-    @JsonIgnore
-    private long userId;
+    //@JsonIgnore    private long userId; 서비스에서 따로 만들어줌
     @Schema(title = "댓글 내용", example = "댓글입니다.", requiredMode = Schema.RequiredMode.REQUIRED)
     private String comment;
 }

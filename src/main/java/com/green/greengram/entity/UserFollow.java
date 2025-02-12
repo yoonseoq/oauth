@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class UserFollow extends CreatedAt{
+public class UserFollow extends CreatedAt{ //복합키 안쓰는 이유
     @EmbeddedId
     private UserFollowIds  userFollowIds;
 

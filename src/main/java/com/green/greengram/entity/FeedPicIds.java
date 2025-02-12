@@ -15,6 +15,6 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class FeedPicIds implements Serializable {
     private Long feedId;
-    @Column(length = 50)
+    @Column(length = 50, name = "pic")
     private String pic;
 }

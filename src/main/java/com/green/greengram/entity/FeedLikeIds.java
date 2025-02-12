@@ -6,11 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+
 @Getter
 @Setter
 @Embeddable
 @EqualsAndHashCode
-public class UserFollowIds implements Serializable {
-    private Long fromUserId;
-    private Long toUserId; //객체지향과 rdb가 섞여있음
+public class FeedLikeIds implements Serializable {
+    private Long feedId;
+    private Long userId;
 }
