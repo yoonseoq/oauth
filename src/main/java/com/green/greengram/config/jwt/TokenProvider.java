@@ -32,6 +32,8 @@ public class TokenProvider {
     }
 
     // JWT 생성
+
+
     public String generateToken(JwtUser jwtUser, Duration expiredAt) {
         Date now = new Date();
         return makeToken(jwtUser, new Date(now.getTime() + expiredAt.toMillis()));

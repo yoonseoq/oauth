@@ -1,7 +1,8 @@
-package com.green.greengram.config.security.oauth.userInfo;
+package com.green.greengram.config.security.oauth;
 
 import com.green.greengram.config.security.SignInProviderType;
-import lombok.RequiredArgsConstructor;
+import com.green.greengram.config.security.oauth.userInfo.KakaoOAuth2UserInfo;
+import com.green.greengram.config.security.oauth.userInfo.Oauth2UserInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
