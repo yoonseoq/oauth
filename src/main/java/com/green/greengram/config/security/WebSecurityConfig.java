@@ -9,7 +9,7 @@ import com.green.greengram.config.security.oauth.Oauth2AuthenticationCheckRedire
 import com.green.greengram.config.security.oauth.Oauth2AuthenticationFailureHandler;
 import com.green.greengram.config.security.oauth.Oauth2AuthenticationRequestBasedCookieRepository;
 import com.green.greengram.config.security.oauth.Oauth2AuthenticationSuccessHandler;
-import com.green.greengram.config.security.oauth.userInfo.MyOauth2UserService;
+import com.green.greengram.config.security.oauth.MyOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -28,7 +29,7 @@ public class WebSecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     //OAuth2
-    private final Oauth2AuthenticationCheckRedirectUriFilter redirectUriFilter;
+    private final Oauth2AuthenticationCheckRedirectUriFilter oauth2AuthenticationCheckRedirectUriFilter ;
     private final Oauth2AuthenticationRequestBasedCookieRepository repository;
     private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
     private final Oauth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
@@ -51,9 +52,9 @@ public class WebSecurityConfig {
                 .formLogin(form -> form.disable()) //SSR(Server Side Rendering)이 아니다. 폼로그인 기능 자체를 비활성화
                 .csrf(csrf -> csrf.disable()) //SSR(Server Side Rendering)이 아니다. 보안관련 SSR 이 아니면 보안이슈가 없기 때문에 기능을 끈다.
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/api/feed", "/api/feed/**").authenticated() //로그인이 되어 있어야만 사용 가능
+                        req.requestMatchers("/api/feed","/api/feed/**").authenticated() //로그인이 되어 있어야만 사용 가능
                             .requestMatchers(HttpMethod.GET,"/api/user").authenticated()
-                            .requestMatchers(HttpMethod.PATCH,"/api/user/pic").authenticated()
+                            .requestMatchers(HttpMethod.PATCH, "/api/user/pic").authenticated()
                             .anyRequest().permitAll() //나머지 요청은 모두 허용
                 )
                 .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
@@ -65,7 +66,7 @@ public class WebSecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo.userService(myOauth2UserService))
                         .successHandler(oauth2AuthenticationSuccessHandler)
                         .failureHandler(oauth2AuthenticationFailureHandler))
-                .addFilterBefore(redirectUriFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(oauth2AuthenticationCheckRedirectUriFilter, OAuth2AuthorizationRequestRedirectFilter.class)
                 .build();
     }
 

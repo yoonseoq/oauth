@@ -1,11 +1,9 @@
-package com.green.greengram.config.security.oauth.userInfo;
+package com.green.greengram.config.security.oauth;
 
-import ch.qos.logback.core.joran.conditional.IfAction;
-import com.green.greengram.config.jwt.JwtUser;
 import com.green.greengram.config.security.MyUserDetails;
 import com.green.greengram.config.security.SignInProviderType;
-import com.green.greengram.config.security.oauth.OAuth2JwtUser;
-import com.green.greengram.config.security.oauth.Oauth2UserInfoFactory;
+import com.green.greengram.config.security.oauth.userInfo.Oauth2UserInfo;
+import com.green.greengram.config.security.oauth.userInfo.Oauth2UserInfoFactory;
 import com.green.greengram.entity.User;
 import com.green.greengram.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +12,9 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 @Slf4j
@@ -46,8 +42,8 @@ public class MyOauth2UserService extends DefaultOAuth2UserService {
         플랫폼 문자열 값은 registration 아래에 있는 속성값들(google, kakao, naver)
          */
         SignInProviderType signInProviderType = SignInProviderType.valueOf(req.getClientRegistration()
-                .getRegistrationId()
-                .toUpperCase());
+                                                                                .getRegistrationId()
+                                                                                .toUpperCase());
         // 통신할때 가져오는 것들
 
         //사용하기 편하도록 규격화된 객체로 변환
@@ -65,16 +61,11 @@ public class MyOauth2UserService extends DefaultOAuth2UserService {
             userRepository.save(user);
         }
 
-//       ;
-//        JwtUser jwtUser = new JwtUser();
-//        jwtUser.setSignedUserId(user.getUserId());
-//        jwtUser.setRoles(new ArrayList<>(1));
-//        jwtUser.getRoles().add("ROLE_USER");
 
         OAuth2JwtUser oAuth2JwtUser = new OAuth2JwtUser(user.getNickName(),
-                user.getPic(),
-                user.getUserId(),
-                Arrays.asList("ROLE_USER")
+                                                        user.getPic(),
+                                                        user.getUserId(),
+                                                        Arrays.asList("ROLE_USER")
         );
 
         MyUserDetails myUserDetails = new MyUserDetails();

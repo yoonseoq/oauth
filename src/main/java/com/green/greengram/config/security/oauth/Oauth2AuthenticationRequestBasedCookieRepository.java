@@ -38,8 +38,8 @@ public class Oauth2AuthenticationRequestBasedCookieRepository
                 , authorizationRequest
                 , globalOauth2.getCookieExpirySeconds()
                 , "/");
-
-        String redirectUriAfterLogin = request.getParameter(globalOauth2.getAuthorizationRequestCookieName());
+        //프론트 요청한 redirect_uri 쿠키에 저장한다
+        String redirectUriAfterLogin = request.getParameter(globalOauth2.getRedirectUriParamCookieName());
         cookieUtils.setCookie(response
                 , globalOauth2.getRedirectUriParamCookieName()
                 , redirectUriAfterLogin

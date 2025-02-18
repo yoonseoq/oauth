@@ -2,11 +2,15 @@ package com.green.greengram.config.security.oauth.userInfo;
 
 import java.util.Map;
 /*
+     kakao user-info response JSON
     {
-        "id": "1212",
-        "acc"
+      "id": "12122",
+      "account_email": "ddd@daum.net",
+      "properties": {
+        "nickname": "홍길동",
+        "thumbnail_image": "profile.jpg"
+      }
     }
-
  */
 
 public class KakaoOAuth2UserInfo extends Oauth2UserInfo {

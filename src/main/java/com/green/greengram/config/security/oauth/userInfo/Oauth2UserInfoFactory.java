@@ -1,8 +1,6 @@
-package com.green.greengram.config.security.oauth;
+package com.green.greengram.config.security.oauth.userInfo;
 
 import com.green.greengram.config.security.SignInProviderType;
-import com.green.greengram.config.security.oauth.userInfo.KakaoOAuth2UserInfo;
-import com.green.greengram.config.security.oauth.userInfo.Oauth2UserInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -16,6 +14,8 @@ public class Oauth2UserInfoFactory { //클래스명에 factory 있으면 객체�
    public Oauth2UserInfo getOauth2UserInfo(SignInProviderType signInProviderType, Map<String, Object> attributes) {
        return switch (signInProviderType){
            case KAKAO -> new KakaoOAuth2UserInfo(attributes);
+           case NAVER -> new NaverOAuth2UserInfo(attributes);
+           case GOOGLE -> new GoogleOAuth2UserInfo(attributes);
            default -> null;
        };
    }

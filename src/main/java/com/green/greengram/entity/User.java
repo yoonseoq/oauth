@@ -11,15 +11,14 @@ import lombok.Setter;
 @Table(
         uniqueConstraints = {
                 @UniqueConstraint(
-                        columnNames = {"provider_type", "uid"}
+                        columnNames = {"uid", "provider_type"}
                 )
         }
 )
 public class User extends UpdatedAt{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //auto_increment
-    //@GeneratedValue(strategy = GenerationType.TABLE) uuid
-    private long userId;
+    private Long userId;
 
     //유니크 주기
     @Column(nullable = false)

@@ -5,16 +5,14 @@ import com.green.greengram.common.GlobalOauth2;
 import com.green.greengram.config.jwt.JwtUser;
 import com.green.greengram.config.jwt.TokenProvider;
 import com.green.greengram.config.security.MyUserDetails;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.ServletRequestBindingException;
-import org.springframework.web.servlet.mvc.method.annotation.UriComponentsBuilderMethodArgumentResolver;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -32,7 +30,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication auth)
-        throws IOException, ServletRequestBindingException{
+        throws IOException, ServletException {
         if (res.isCommitted()){ // 응답객체가 만료된 경우(이전 프로세스에서 응답처리를 했는 상테)
             log.error("onAuthenticationSuccess called with a committed response {}",res);
             return;
@@ -51,17 +49,18 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         String targetUrl = redirectUrl == null? getDefaultTargetUrl() : redirectUrl;
 
+        // 쿼리스트링 생성을 위한 준비과정
         MyUserDetails myUserDetails = (MyUserDetails) auth.getPrincipal();
         OAuth2JwtUser oAuth2JwtUser = (OAuth2JwtUser)myUserDetails.getJwtUser();
 
-        JwtUser jwtUser = myUserDetails.getJwtUser();
+        JwtUser jwtUser = new JwtUser(oAuth2JwtUser.getSignedUserId(),oAuth2JwtUser.getRoles());
 
         //퀴리스트링 생성을 위한 준비과정
         String accessToken = tokenProvider.generateToken(jwtUser, Duration.ofHours(8));
         String refreshToken = tokenProvider.generateToken(jwtUser, Duration.ofDays(15));
 
         int maxAge = 1_296_000;
-        cookieUtils.setCookie(res,"refreshToken",refreshToken,maxAge,"/api/user/access-token");
+        cookieUtils.setCookie(res,"refreshToken",refreshToken, maxAge,"/api/user/access-token");
 
         /*
             쿼리 스트링 생성
@@ -79,7 +78,8 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .queryParam("user_id", oAuth2JwtUser.getSignedUserId())
                 .queryParam("nick_name", oAuth2JwtUser.getNickname()).encode()
                 .queryParam("pic", oAuth2JwtUser.getPic())
-                .build().toUriString();
+                .build()
+                .toUriString();
     }
 
     private void clearAuthenticationAttributes(HttpServletRequest req, HttpServletResponse res) {
