@@ -87,7 +87,7 @@ spring:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize #카카오 인증처리 url
             token-uri: https://kauth.kakao.com/oauth/token
-            user-info-uri: https://kapi.kako.com/v2/user/me
+            user-info-uri: https://kapi.kakao.com/v2/user/me
             user-info-authentication-method: header #default값이 header AccessToken 어디에 담아서 보낼지 설정(header, form, query)
             user-name-attribute: id #유일값 속성명
           naver:
